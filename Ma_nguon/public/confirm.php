@@ -10,17 +10,17 @@ $data = $_SESSION['draft']['data'];
 require __DIR__.'/../templates/header.php';
 ?>
 <div class="page-heading">
-<h1>Bước 2. Xác nhận</h1>
-<p>Đối chiếu thông tin trước khi xác nhận.</p>
+<h1>Bước 2. Xác nhận phát hành gói ngôn ngữ</h1>
+<p>Đối chiếu thông tin gói bản dịch và biên dịch viên trước khi xác nhận phát hành.</p>
 </div>
-<section class="confirmation" aria-label="Thông tin đăng ký">
+<section class="confirmation" aria-label="Thông tin bản dịch">
 <dl class="summary-list">
 <div>
-<dt>Họ tên</dt>
+<dt>Biên dịch viên / Người phát hành</dt>
 <dd><?= e($data['name']) ?></dd>
 </div>
 <div>
-<dt>Email</dt>
+<dt>Email liên hệ / Mã kiểm duyệt</dt>
 <dd><?= e($data['email']) ?></dd>
 </div>
 </dl>
@@ -28,7 +28,8 @@ require __DIR__.'/../templates/header.php';
 <a href="/register.php">Sửa lại</a>
 <form method="post" action="/complete.php">
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
-<button>Xác nhận</button>
+<input type="hidden" name="event_id" value="<?= (int)$data['event_id'] ?>">
+<button>Xác nhận phát hành</button>
 </form>
 <form method="post" action="/cancel.php">
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">

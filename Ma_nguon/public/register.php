@@ -26,7 +26,7 @@ require __DIR__.'/../templates/header.php';
 </div>
 <form class="registration-form" method="post">
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
-<label class="form-field" for="event_id">Sự kiện
+<label class="form-field" for="event_id">Phiên bản / Gói ngôn ngữ
 <select id="event_id" name="event_id">
 <?php foreach($events as $event): ?>
 <option value="<?= $event['id'] ?>" <?= (int)$data['event_id']===$event['id']?'selected':'' ?>>
@@ -35,7 +35,7 @@ require __DIR__.'/../templates/header.php';
 <?php endforeach; ?>
 </select>
 </label>
-<label class="form-field" for="name">Họ tên
+<label class="form-field" for="name">Biên dịch viên
 <input id="name" name="name" value="<?= e($data['name']) ?>">
 </label>
 <label class="form-field" for="email">Email
