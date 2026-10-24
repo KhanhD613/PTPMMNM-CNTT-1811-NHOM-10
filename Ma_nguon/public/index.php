@@ -13,9 +13,23 @@ require __DIR__ . '/../templates/header.php';
 </div>
 <form class="search-form" method="get">
     <label class="form-field" for="q">Từ khóa
-<input id="q" name="q" value="<?= e($query) ?>">
+        <input id="q" name="q" value="<?= e($query) ?>">
     </label>
-    <button>Tìm</button>
+
+    <label class="form-field" for="category">Loại sự kiện
+        <select id="category" name="category">
+            <option value="">-- Tất cả loại --</option>
+            <option value="tech" <?= $category === 'tech' ? 'selected' : '' ?>>Tech</option>
+            <option value="design" <?= $category === 'design' ? 'selected' : '' ?>>Design</option>
+        </select>
+    </label>
+
+    <label class="form-field checkbox-field" for="available">
+        <input type="checkbox" id="available" name="available" value="1" <?= $availableOnly ? 'checked' : '' ?>>
+        Chỉ sự kiện còn chỗ
+    </label>
+
+    <button>Lọc / Tìm</button>
 </form>
 <p class="result-count">Kết quả: <?= count($visible) ?></p>
 <section class="event-list" aria-label="Danh sách sự kiện">
