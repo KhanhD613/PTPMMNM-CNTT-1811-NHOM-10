@@ -2,6 +2,12 @@
 set -u
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)" || exit 2
 fail=0
+
+project_name="Translation & Language Pack Release System"
+echo "=========================================="
+echo "Kiểm tra hệ thống: $project_name"
+echo "=========================================="
+
 check_tool() {
   if command -v "$1" >/dev/null 2>&1; then
     printf 'OK tool %s\n' "$1"
@@ -10,16 +16,20 @@ check_tool() {
     fail=$((fail + 1))
   fi
 }
-for tool in php git; do check_tool "$tool"; done
-for file in README.md public/index.php; do
-  if [[ -f "$root/$file" ]]; then
-    printf 'OK file %s\n' "$file"
+
+for tool in php git zip; do check_tool "$tool"; done
+
+for file in README.md public/index.php locales/; do
+  if [[ -e "$root/$file" ]]; then
+    printf 'OK path %s\n' "$file"
   else
-    printf 'MISSING file %s\n' "$file" >&2
+    printf 'MISSING path %s\n' "$file" >&2
     fail=$((fail + 1))
   fi
 done
+
 if [[ "$fail" -gt 0 ]]; then exit 2; fi
+
 if php -l "$root/public/index.php"; then
   echo 'CHECK_ENV=PASS'
 else

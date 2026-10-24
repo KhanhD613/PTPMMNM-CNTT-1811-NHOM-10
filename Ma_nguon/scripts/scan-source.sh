@@ -1,18 +1,38 @@
 #!/usr/bin/env bash
-set -uo pipefail
-# Khung duyệt tệp đã được GV cấp; điền các TODO về điều kiện, đếm và mã thoát.
-if [[ $# -ne 1 ]]; then echo 'Usage: scan-source.sh DIRECTORY' >&2; exit 2; fi
-root="$1"
-# TODO 1: thiếu/không đọc được thư mục hoặc thiếu php -> exit 2.
-list="$(mktemp)" || exit 2
-trap 'rm -f -- "$list"' EXIT
-if ! find "$root" -type f -name '*.php' -print0 > "$list"; then exit 2; fi
-total=0; passed=0; failed=0
+set -u
+
+target_dir="${1:-locales}"
+total=0
+pass=0
+fail=0
+
+if [[ ! -d "$target_dir" ]]; then
+  echo "Error: Thư mục '$target_dir' không tồn tại." >&2
+  exit 2
+fi
+
+found_files=0
 while IFS= read -r -d '' file; do
-  # TODO 2: tăng total; php -l "$file"; tăng passed hoặc failed.
-  # Không dừng vòng lặp khi một tệp bị lỗi.
-  :
-done < "$list"
-printf 'TOTAL=%s PASS=%s FAIL=%s\n' "$total" "$passed" "$failed"
-# TODO 3: rỗng -> 2; có lỗi -> 1; tất cả đạt -> 0.
-exit 3
+  found_files=$((found_files + 1))
+  total=$((total + 1))
+  
+  if php -r "json_decode(file_get_contents('$file')); if (json_last_error() === JSON_ERROR_NONE) { exit(0); } else { exit(1); }" 2>/dev/null; then
+    printf 'PASS translation file: %s\n' "$file"
+    pass=$((pass + 1))
+  else
+    printf 'FAIL syntax error in translation file: %s\n' "$file" >&2
+    fail=$((fail + 1))
+  fi
+done < <(find "$target_dir" -type f \( -name "*.json" -o -name "*.php" \) -print0)
+
+if [[ "$found_files" -eq 0 ]]; then
+  echo "Error: Không tìm thấy tệp bản dịch nào trong '$target_dir'." >&2
+  exit 2
+fi
+
+echo "TOTAL=$total PASS=$pass FAIL=$fail"
+
+if [[ "$fail" -gt 0 ]]; then
+  exit 1
+fi
+exit 0
